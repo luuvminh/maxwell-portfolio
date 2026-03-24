@@ -1,0 +1,77 @@
+// prisma/schema.prisma
+// Supports SQLite locally, PostgreSQL on Railway
+// Switch DATABASE_URL in .env to toggle
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String?
+  role          Role      @default(ADMIN)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Post {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  title       String
+  excerpt     String
+  content     String
+  coverImage  String?
+  tags        String[]    @default([])
+  published   Boolean     @default(false)
+  featured    Boolean     @default(false)
+  views       Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  publishedAt DateTime?
+}
+
+model Project {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  title       String
+  description String
+  content     String
+  coverImage  String?
+  tags        String[]    @default([])
+  liveUrl     String?
+  githubUrl   String?
+  published   Boolean     @default(false)
+  featured    Boolean     @default(false)
+  order       Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model SiteSettings {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  updatedAt   DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+}
